@@ -37,6 +37,8 @@ struct Args {
     int n_samples = 1 << 16;
     int max_steps = 512;
     int repeats = 5;
+    int wos_repeats = 1;
+    int wos_warmup_queries = 1 << 16;
     float eps = 1.0e-4f;
     float safety = 0.99f;
     uint32_t seed = 12345u;
@@ -59,6 +61,9 @@ struct ProfileResult {
     int n_queries = 0;
     int n_samples = 0;
     int repeats = 0;
+    int run_index = 0;
+    int wos_warmup_queries = 0;
+    double wos_warmup_usec = 0.0;
     double total_usec = 0.0;
     double usec_per_query = 0.0;
     double usec_per_sample = 0.0;
@@ -134,6 +139,8 @@ Args parse_args(int argc, char** argv) {
         else if (key == "--n-samples" || key == "--n_samples") a.n_samples = std::stoi(next_value(i, argc, argv, "--n-samples"));
         else if (key == "--max-steps" || key == "--max_steps") a.max_steps = std::stoi(next_value(i, argc, argv, "--max-steps"));
         else if (key == "--repeats") a.repeats = std::stoi(next_value(i, argc, argv, "--repeats"));
+        else if (key == "--wos-repeats" || key == "--wos_repeats") a.wos_repeats = std::stoi(next_value(i, argc, argv, "--wos-repeats"));
+        else if (key == "--wos-warmup-queries" || key == "--wos_warmup_queries") a.wos_warmup_queries = std::stoi(next_value(i, argc, argv, "--wos-warmup-queries"));
         else if (key == "--eps" || key == "--epsilon") a.eps = std::stof(next_value(i, argc, argv, "--eps"));
         else if (key == "--safety") a.safety = std::stof(next_value(i, argc, argv, "--safety"));
         else if (key == "--seed") a.seed = static_cast<uint32_t>(std::stoul(next_value(i, argc, argv, "--seed")));
@@ -149,6 +156,8 @@ Args parse_args(int argc, char** argv) {
                 << "  --n-samples N                       Starting particles for wos mode.\n"
                 << "  --max-steps N                       WoS-style maximum steps.\n"
                 << "  --repeats N                         CPQ timing repeats after one warmup.\n"
+                << "  --wos-repeats N                     Timed WoS repeats in one process.\n"
+                << "  --wos-warmup-queries N              Untimed query before each WoS repeat. Use 0 to disable.\n"
                 << "  --eps X                             Boundary epsilon for wos mode.\n"
                 << "  --safety X                          Step length multiplier for wos mode.\n"
                 << "  --lat-segments N --lon-segments N   Procedural mesh resolution.\n"
@@ -168,6 +177,8 @@ Args parse_args(int argc, char** argv) {
     if (a.lat_segments < 8 || a.lon_segments < 16) die("mesh resolution too small");
     if (a.n_queries <= 0 || a.n_samples <= 0) die("n_queries and n_samples must be positive");
     if (a.repeats <= 0) die("repeats must be positive");
+    if (a.wos_repeats <= 0) die("wos_repeats must be positive");
+    if (a.wos_warmup_queries < 0) die("wos_warmup_queries must be non-negative");
     if (!(a.eps > 0.0f)) die("eps must be positive");
     if (!(a.safety > 0.0f && a.safety <= 1.0f)) die("safety must be in (0, 1]");
     return a;
@@ -397,8 +408,19 @@ int percentile_steps(std::vector<int> values, double p) {
 }
 
 template <class QueryFn>
-ProfileResult profile_wos(const Args& args, QueryFn&& query_fn) {
-    std::mt19937 rng(args.seed + 17u);
+ProfileResult profile_wos(const Args& args, QueryFn&& query_fn, int run_index) {
+    double warmup_usec = 0.0;
+    if (args.wos_warmup_queries > 0) {
+        std::mt19937 warmup_rng(args.seed + 7919u + static_cast<uint32_t>(104729 * run_index));
+        std::vector<fcpw::Vector3> warmup_points = make_start_points(args.wos_warmup_queries, args.radius, warmup_rng);
+        const auto w0 = Clock::now();
+        QueryBatch warm = query_fn(warmup_points);
+        const auto w1 = Clock::now();
+        if (static_cast<int>(warm.distances.size()) != args.wos_warmup_queries) die("WoS warmup query returned wrong size");
+        warmup_usec = std::chrono::duration<double, std::micro>(w1 - w0).count();
+    }
+
+    std::mt19937 rng(args.seed + 17u + static_cast<uint32_t>(1000003 * run_index));
     std::vector<fcpw::Vector3> x = make_start_points(args.n_samples, args.radius, rng);
     std::vector<int> steps(args.n_samples, 0);
     std::vector<int> active;
@@ -448,6 +470,10 @@ ProfileResult profile_wos(const Args& args, QueryFn&& query_fn) {
     r.backend = args.backend;
     r.mode = "wos";
     r.n_samples = args.n_samples;
+    r.repeats = args.wos_repeats;
+    r.run_index = run_index;
+    r.wos_warmup_queries = args.wos_warmup_queries;
+    r.wos_warmup_usec = warmup_usec;
     r.total_usec = usec;
     r.usec_per_sample = usec / static_cast<double>(args.n_samples);
     r.usec_per_wos_query = query_count == 0 ? 0.0 : usec / static_cast<double>(query_count);
@@ -507,6 +533,9 @@ void append_result_json(std::ostringstream& o, const ProfileResult& r, int inden
     o << sp2 << "\"active_remaining\": " << r.active_remaining << ",\n";
     o << sp2 << "\"query_count\": " << r.query_count << ",\n";
     o << sp2 << "\"repeats\": " << r.repeats << ",\n";
+    o << sp2 << "\"run_index\": " << r.run_index << ",\n";
+    o << sp2 << "\"wos_warmup_queries\": " << r.wos_warmup_queries << ",\n";
+    o << sp2 << "\"wos_warmup_usec\": " << r.wos_warmup_usec << ",\n";
     o << sp2 << "\"total_usec\": " << r.total_usec << ",\n";
     o << sp2 << "\"checksum\": " << r.checksum << ",\n";
     o << sp2 << "\"active_count_by_step\": [";
@@ -532,7 +561,10 @@ std::string to_json(const std::vector<ProfileResult>& results, const Args& args,
     o << "  },\n";
     o << "  \"runtime\": {\n";
     o << "    \"fcpw_dir\": \"" << json_escape(args.fcpw_dir) << "\",\n";
-    o << "    \"print_logs\": " << (args.print_logs ? "true" : "false") << "\n";
+  o << "    \"print_logs\": " << (args.print_logs ? "true" : "false") << ",\n";
+  o << "    \"repeats\": " << args.repeats << ",\n";
+  o << "    \"wos_repeats\": " << args.wos_repeats << ",\n";
+  o << "    \"wos_warmup_queries\": " << args.wos_warmup_queries << "\n";
     o << "  },\n";
     if (mesh) {
         o << "  \"mesh\": {\n";
@@ -604,7 +636,9 @@ int main(int argc, char** argv) {
                 return query_cpu(scene, pts);
             };
             if (args.mode == "cpq" || args.mode == "both") results.push_back(profile_cpq(args, query_fn));
-            if (args.mode == "wos" || args.mode == "both") results.push_back(profile_wos(args, query_fn));
+            if (args.mode == "wos" || args.mode == "both") {
+                for (int r = 0; r < args.wos_repeats; ++r) results.push_back(profile_wos(args, query_fn, r));
+            }
         } else {
 #if N2WOS_ENABLE_FCPW_GPU
             std::cerr << "Creating FCPW GPUScene, fcpw_dir=" << args.fcpw_dir
@@ -617,7 +651,9 @@ int main(int argc, char** argv) {
                 return query_gpu(gpu_scene, pts);
             };
             if (args.mode == "cpq" || args.mode == "both") results.push_back(profile_cpq(args, query_fn));
-            if (args.mode == "wos" || args.mode == "both") results.push_back(profile_wos(args, query_fn));
+            if (args.mode == "wos" || args.mode == "both") {
+                for (int r = 0; r < args.wos_repeats; ++r) results.push_back(profile_wos(args, query_fn, r));
+            }
 #else
             die("GPU path was not compiled");
 #endif

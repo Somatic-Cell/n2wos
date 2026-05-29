@@ -18,11 +18,10 @@ else
     else
       echo "Adding FCPW as a git submodule"
       git submodule add "$FCPW_URL" external/fcpw
-      git -C external/fcpw submodule update --init --recursive
     fi
   else
     echo "Not inside a git repository; cloning FCPW directly"
-    git clone --recursive "$FCPW_URL" external/fcpw
+    git clone "$FCPW_URL" external/fcpw
   fi
 fi
 
@@ -30,7 +29,27 @@ if [ -n "$FCPW_REF" ]; then
   echo "Checking out FCPW ref: $FCPW_REF"
   git -C external/fcpw fetch --all --tags
   git -C external/fcpw checkout "$FCPW_REF"
-  git -C external/fcpw submodule update --init --recursive
+fi
+
+# Always initialize FCPW's nested dependencies, even if external/fcpw already
+# existed before this script was run.  This is needed for deps/eigen and, in GPU
+# builds, deps/slang-rhi.
+echo "Updating FCPW nested submodules"
+git -C external/fcpw submodule update --init --recursive
+
+printf '\nFCPW dependency check:\n'
+if [ -f external/fcpw/deps/eigen/Eigen/Core ]; then
+  echo "  ok: deps/eigen/Eigen/Core"
+else
+  echo "  missing: deps/eigen/Eigen/Core" >&2
+  exit 1
+fi
+
+if [ -f external/fcpw/deps/slang-rhi/CMakeLists.txt ]; then
+  echo "  ok: deps/slang-rhi/CMakeLists.txt"
+else
+  echo "  missing: deps/slang-rhi/CMakeLists.txt"
+  echo "  GPU builds will fail until this nested submodule is initialized."
 fi
 
 printf '\nFCPW status:\n'

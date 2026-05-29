@@ -1,0 +1,12 @@
+{
+  "target": "harmonic_x2_minus_y2",
+  "boundary_condition": "g(p)=p_x^2-p_y^2 on the FCPW mesh boundary",
+  "geometry": "procedural_bumpy_sphere via exact FCPW closest-point queries",
+  "main_command": "./build-release-gpu/native/n2wos_eval_2lmc --backend cuda --cache oracle --cache-depth 8 --n-samples 65536 --max-steps 512 --json results/2lmc_oracle_m8.json",
+  "recommended_initial_runs": [
+    {"cache": "oracle", "m": 8},
+    {"cache": "oracle", "m": 16},
+    {"cache": "scaled", "m": 8, "cache_alpha": 0.95},
+    {"cache": "scaled", "m": 16, "cache_alpha": 0.95}
+  ]
+}

@@ -28,6 +28,10 @@ DEFAULT_COLUMNS = [
     "n_samples",
     "max_steps_limit",
     "repeats",
+    "run_index",
+    "wos_warmup_queries",
+    "wos_warmup_usec",
+    "total_usec",
     "mean_usec_per_query",
     "median_usec_per_query",
     "usec_per_query",
@@ -49,6 +53,9 @@ AGGREGATE_COLUMNS = [
     "n_samples",
     "max_steps_limit",
     "count",
+    "wos_warmup_queries_mean",
+    "wos_warmup_usec_mean",
+    "total_usec_mean",
     "mean_usec_per_query_mean",
     "median_usec_per_query_mean",
     "usec_per_query_mean",
@@ -79,6 +86,8 @@ NUMERIC_AGG_FIELDS = [
     "active_remaining",
     "query_count",
     "total_usec",
+    "wos_warmup_queries",
+    "wos_warmup_usec",
 ]
 
 

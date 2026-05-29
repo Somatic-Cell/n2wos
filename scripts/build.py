@@ -16,6 +16,7 @@ def main():
     parser.add_argument("--type", default="Release")
     parser.add_argument("--gpu", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--enoki", action=argparse.BooleanOptionalAction, default=False)
+    parser.add_argument("--tcnn", action=argparse.BooleanOptionalAction, default=False)
     parser.add_argument("--jobs", "-j", type=int, default=0)
     args = parser.parse_args()
 
@@ -27,6 +28,7 @@ def main():
         f"-DCMAKE_BUILD_TYPE={args.type}",
         f"-DN2WOS_ENABLE_FCPW_GPU={'ON' if args.gpu else 'OFF'}",
         f"-DN2WOS_USE_ENOKI={'ON' if args.enoki else 'OFF'}",
+        f"-DN2WOS_ENABLE_TCNN={'ON' if args.tcnn else 'OFF'}",
     ])
 
     cmd = ["cmake", "--build", build_dir]
