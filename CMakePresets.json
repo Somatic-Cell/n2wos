@@ -1,0 +1,43 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "release-cpu",
+      "displayName": "Release CPU-only",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-release-cpu",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "N2WOS_ENABLE_FCPW_GPU": "OFF",
+        "N2WOS_USE_ENOKI": "OFF"
+      }
+    },
+    {
+      "name": "release-gpu",
+      "displayName": "Release with FCPW GPU support",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-release-gpu",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "N2WOS_ENABLE_FCPW_GPU": "ON",
+        "N2WOS_USE_ENOKI": "OFF"
+      }
+    },
+    {
+      "name": "debug-gpu",
+      "displayName": "Debug with FCPW GPU support",
+      "generator": "Unix Makefiles",
+      "binaryDir": "${sourceDir}/build-debug-gpu",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "N2WOS_ENABLE_FCPW_GPU": "ON",
+        "N2WOS_USE_ENOKI": "OFF"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "release-cpu", "configurePreset": "release-cpu" },
+    { "name": "release-gpu", "configurePreset": "release-gpu" },
+    { "name": "debug-gpu", "configurePreset": "debug-gpu" }
+  ]
+}

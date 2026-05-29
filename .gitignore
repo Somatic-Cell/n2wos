@@ -1,0 +1,17 @@
+# build outputs
+/build*/
+/cmake-build-*/
+
+# third-party dependencies should normally be git submodules under external/
+# Do not ignore external/fcpw because git needs to track the submodule gitlink.
+
+# generated run output
+/results/**/*.log
+/results/**/*.jsonl
+
+# editor / OS noise
+.DS_Store
+.vscode/
+.idea/
+__pycache__/
+*.pyc

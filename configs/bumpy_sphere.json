@@ -1,0 +1,9 @@
+{
+  "mesh": "procedural_bumpy_sphere",
+  "lat_segments": 128,
+  "lon_segments": 256,
+  "radius": 1.0,
+  "bump_amplitude": 0.08,
+  "bump_frequency": 7.0,
+  "note": "The first patch uses this mesh only as a reproducible geometry-query workload. It is not yet a PDE benchmark."
+}
