@@ -96,6 +96,8 @@ def main(argv: Sequence[str] | None = None) -> int:
             data = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
+        if not isinstance(data, dict):
+            continue
         if data.get("program") != "n2wos_eval_2lmc":
             continue
         rows.append(flatten(path, data))

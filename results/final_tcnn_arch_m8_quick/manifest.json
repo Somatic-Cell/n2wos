@@ -1,0 +1,219 @@
+{
+  "program": "run_tcnn_arch_sweep",
+  "backend": "cuda",
+  "m": 8,
+  "seeds": [
+    12345
+  ],
+  "architectures": [
+    "nano",
+    "tiny",
+    "small",
+    "medium",
+    "baseline"
+  ],
+  "steps_list": [
+    100,
+    500,
+    2000
+  ],
+  "arch_specs": {
+    "nano": {
+      "n_levels": 4,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 12,
+      "base_resolution": 8,
+      "per_level_scale": 1.8,
+      "n_neurons": 16,
+      "n_hidden_layers": 1
+    },
+    "tiny": {
+      "n_levels": 6,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 12,
+      "base_resolution": 8,
+      "per_level_scale": 1.65,
+      "n_neurons": 16,
+      "n_hidden_layers": 1
+    },
+    "small": {
+      "n_levels": 8,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 13,
+      "base_resolution": 8,
+      "per_level_scale": 1.55,
+      "n_neurons": 16,
+      "n_hidden_layers": 1
+    },
+    "medium": {
+      "n_levels": 10,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 14,
+      "base_resolution": 8,
+      "per_level_scale": 1.5,
+      "n_neurons": 32,
+      "n_hidden_layers": 2
+    },
+    "baseline": {
+      "n_levels": 12,
+      "n_features_per_level": 2,
+      "log2_hashmap_size": 17,
+      "base_resolution": 8,
+      "per_level_scale": 1.45,
+      "n_neurons": 32,
+      "n_hidden_layers": 2
+    }
+  },
+  "runs": [
+    {
+      "seed": 12345,
+      "architecture": "nano",
+      "steps": 100,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_nano.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_100.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_100.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "nano",
+      "steps": 500,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_nano.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_500.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_500.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "nano",
+      "steps": 2000,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_nano.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_2000.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_nano/tcnn_steps_2000.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "tiny",
+      "steps": 100,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_tiny.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_100.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_100.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "tiny",
+      "steps": 500,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_tiny.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_500.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_500.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "tiny",
+      "steps": 2000,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_tiny.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_2000.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_tiny/tcnn_steps_2000.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "small",
+      "steps": 100,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_small.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_100.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_100.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "small",
+      "steps": 500,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_small.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_500.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_500.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "small",
+      "steps": 2000,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_small.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_2000.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_small/tcnn_steps_2000.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "medium",
+      "steps": 100,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_medium.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_100.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_100.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "medium",
+      "steps": 500,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_medium.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_500.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_500.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "medium",
+      "steps": 2000,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_medium.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_2000.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_medium/tcnn_steps_2000.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "baseline",
+      "steps": 100,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_baseline.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_100.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_100.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "baseline",
+      "steps": 500,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_baseline.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_500.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_500.log"
+    },
+    {
+      "seed": 12345,
+      "architecture": "baseline",
+      "steps": 2000,
+      "config": "results/final_tcnn_arch_m8_quick/configs/cache_baseline.json",
+      "base_json": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_dumpbase.json",
+      "samples_csv": "results/final_tcnn_arch_m8_quick/seed_12345/2lmc_m8_samples.csv",
+      "result_json": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_2000.json",
+      "log": "results/final_tcnn_arch_m8_quick/seed_12345/arch_baseline/tcnn_steps_2000.log"
+    }
+  ]
+}

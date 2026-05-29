@@ -32,6 +32,7 @@ struct Args {
   std::string backend = "cuda";
   std::string cache = "exact"; // exact, scaled_exact, zero, tcnn_stub, tcnn
   std::string json_path;
+  std::string dump_samples_path;
   std::string fcpw_dir = N2WOS_FCPW_SOURCE_DIR;
   int lat_segments = 128;
   int lon_segments = 256;
@@ -90,6 +91,9 @@ struct RunResult {
   int truncated_count = 0;
   std::vector<int> active_counts;
   std::vector<double> values;
+  std::vector<fcpw::Vector3> cache_points;
+  std::vector<int> cache_is_boundary;
+  std::vector<int> cache_steps;
 };
 
 struct ResidualResult {
@@ -106,6 +110,9 @@ struct ResidualResult {
   std::vector<double> w;
   std::vector<double> c;
   std::vector<double> r;
+  std::vector<fcpw::Vector3> cache_points;
+  std::vector<int> cache_is_boundary;
+  std::vector<int> cache_steps;
 };
 
 [[noreturn]] void die(const std::string& msg) { throw std::runtime_error(msg); }
@@ -151,6 +158,7 @@ Args parse_args(int argc, char** argv) {
     if (key == "--backend") a.backend = next_value(i, argc, argv, "--backend");
     else if (key == "--cache") a.cache = next_value(i, argc, argv, "--cache");
     else if (key == "--json") a.json_path = next_value(i, argc, argv, "--json");
+    else if (key == "--dump-samples" || key == "--dump_samples") a.dump_samples_path = next_value(i, argc, argv, "--dump-samples");
     else if (key == "--fcpw-dir" || key == "--fcpw_dir") a.fcpw_dir = next_value(i, argc, argv, "--fcpw-dir");
     else if (key == "--m" || key == "--depth") a.m = std::stoi(next_value(i, argc, argv, "--m"));
     else if (key == "--max-steps" || key == "--max_steps") a.max_steps = std::stoi(next_value(i, argc, argv, "--max-steps"));
@@ -184,7 +192,8 @@ Args parse_args(int argc, char** argv) {
         << "  --n-pure N --n-coarse N --n-residual N\n"
         << "  --warmup-queries N\n"
         << "  --x0 X --y0 Y --z0 Z\n"
-        << "  --json PATH\n";
+        << "  --json PATH\n"
+        << "  --dump-samples PATH   CSV dump of coarse/residual cache points for external cache evaluation\n";
       std::exit(0);
     } else {
       die("unknown argument: " + key);
@@ -397,6 +406,9 @@ RunResult run_coarse(const Args& args, QueryFn&& query_fn) {
   out.m = args.m;
   out.max_steps = args.m;
   out.values.assign(static_cast<size_t>(out.n), 0.0);
+  out.cache_points.assign(static_cast<size_t>(out.n), start_point(args));
+  out.cache_is_boundary.assign(static_cast<size_t>(out.n), 0);
+  out.cache_steps.assign(static_cast<size_t>(out.n), 0);
   std::vector<fcpw::Vector3> x(static_cast<size_t>(out.n), start_point(args));
   std::vector<int> steps(static_cast<size_t>(out.n), 0), active;
   active.reserve(static_cast<size_t>(out.n));
@@ -404,7 +416,13 @@ RunResult run_coarse(const Args& args, QueryFn&& query_fn) {
   std::mt19937 rng(args.seed + 202u);
   const auto t0 = Clock::now();
   if (args.m == 0) {
-    for (int i = 0; i < out.n; ++i) out.values[static_cast<size_t>(i)] = cache_value(x[static_cast<size_t>(i)], args);
+    for (int i = 0; i < out.n; ++i) {
+      const size_t si = static_cast<size_t>(i);
+      out.cache_points[si] = x[si];
+      out.cache_is_boundary[si] = 0;
+      out.cache_steps[si] = 0;
+      out.values[si] = cache_value(x[si], args);
+    }
   } else {
     for (int step = 0; step < args.m && !active.empty(); ++step) {
       out.active_counts.push_back(static_cast<int>(active.size()));
@@ -422,12 +440,21 @@ RunResult run_coarse(const Args& args, QueryFn&& query_fn) {
         const float d = q.distances[k];
         steps[si] += 1;
         if (!(d > args.eps) || !std::isfinite(d)) {
+          out.cache_points[si] = q.closest_points[k];
+          out.cache_is_boundary[si] = 1;
+          out.cache_steps[si] = steps[si];
           out.values[si] = boundary_value(q.closest_points[k]);
           out.boundary_count += 1;
         } else {
           x[si] += (args.safety * d) * random_unit_vector(rng);
-          if (steps[si] >= args.m) out.values[si] = cache_value(x[si], args);
-          else next.push_back(idx);
+          if (steps[si] >= args.m) {
+            out.cache_points[si] = x[si];
+            out.cache_is_boundary[si] = 0;
+            out.cache_steps[si] = steps[si];
+            out.values[si] = cache_value(x[si], args);
+          } else {
+            next.push_back(idx);
+          }
         }
       }
       active.swap(next);
@@ -449,6 +476,9 @@ ResidualResult run_residual(const Args& args, QueryFn&& query_fn) {
   out.w.assign(static_cast<size_t>(out.n), 0.0);
   out.c.assign(static_cast<size_t>(out.n), 0.0);
   out.r.assign(static_cast<size_t>(out.n), 0.0);
+  out.cache_points.assign(static_cast<size_t>(out.n), start_point(args));
+  out.cache_is_boundary.assign(static_cast<size_t>(out.n), 0);
+  out.cache_steps.assign(static_cast<size_t>(out.n), 0);
   std::vector<fcpw::Vector3> x(static_cast<size_t>(out.n), start_point(args));
   std::vector<int> steps(static_cast<size_t>(out.n), 0), active;
   std::vector<unsigned char> captured(static_cast<size_t>(out.n), 0);
@@ -458,8 +488,12 @@ ResidualResult run_residual(const Args& args, QueryFn&& query_fn) {
   const auto t0 = Clock::now();
   if (args.m == 0) {
     for (int i = 0; i < out.n; ++i) {
-      out.c[static_cast<size_t>(i)] = cache_value(x[static_cast<size_t>(i)], args);
-      captured[static_cast<size_t>(i)] = 1;
+      const size_t si = static_cast<size_t>(i);
+      out.cache_points[si] = x[si];
+      out.cache_is_boundary[si] = 0;
+      out.cache_steps[si] = 0;
+      out.c[si] = cache_value(x[si], args);
+      captured[si] = 1;
     }
   }
   for (int step = 0; step < args.max_steps && !active.empty(); ++step) {
@@ -480,6 +514,9 @@ ResidualResult run_residual(const Args& args, QueryFn&& query_fn) {
       if (!(d > args.eps) || !std::isfinite(d)) {
         out.w[si] = boundary_value(q.closest_points[k]);
         if (!captured[si]) {
+          out.cache_points[si] = q.closest_points[k];
+          out.cache_is_boundary[si] = 1;
+          out.cache_steps[si] = steps[si];
           out.c[si] = out.w[si];
           captured[si] = 1;
         }
@@ -487,6 +524,9 @@ ResidualResult run_residual(const Args& args, QueryFn&& query_fn) {
       } else {
         x[si] += (args.safety * d) * random_unit_vector(rng);
         if (!captured[si] && steps[si] >= args.m) {
+          out.cache_points[si] = x[si];
+          out.cache_is_boundary[si] = 0;
+          out.cache_steps[si] = steps[si];
           out.c[si] = cache_value(x[si], args);
           captured[si] = 1;
         }
@@ -498,7 +538,13 @@ ResidualResult run_residual(const Args& args, QueryFn&& query_fn) {
   for (int idx : active) {
     const size_t si = static_cast<size_t>(idx);
     out.w[si] = target_value(x[si]);
-    if (!captured[si]) out.c[si] = cache_value(x[si], args);
+    if (!captured[si]) {
+      out.cache_points[si] = x[si];
+      out.cache_is_boundary[si] = 0;
+      out.cache_steps[si] = steps[si];
+      out.c[si] = cache_value(x[si], args);
+      captured[si] = 1;
+    }
     out.truncated_count += 1;
   }
   for (int i = 0; i < out.n; ++i) {
@@ -640,6 +686,32 @@ void write_json(const std::string& json, const std::string& path) {
   std::cout << json;
 }
 
+void write_sample_dump(const Args& args, const RunResult* coarse, const ResidualResult* residual) {
+  if (args.dump_samples_path.empty()) return;
+  std::ofstream out(args.dump_samples_path);
+  if (!out) die("failed to open sample dump: " + args.dump_samples_path);
+  out << std::setprecision(10);
+  out << "kind,index,x,y,z,is_boundary,cache_steps,c_exact,w\n";
+  if (coarse) {
+    for (int i = 0; i < coarse->n; ++i) {
+      const size_t si = static_cast<size_t>(i);
+      const auto& p = coarse->cache_points[si];
+      out << "coarse," << i << "," << p[0] << "," << p[1] << "," << p[2] << ","
+          << coarse->cache_is_boundary[si] << "," << coarse->cache_steps[si] << ","
+          << coarse->values[si] << ",\n";
+    }
+  }
+  if (residual) {
+    for (int i = 0; i < residual->n; ++i) {
+      const size_t si = static_cast<size_t>(i);
+      const auto& p = residual->cache_points[si];
+      out << "residual," << i << "," << p[0] << "," << p[1] << "," << p[2] << ","
+          << residual->cache_is_boundary[si] << "," << residual->cache_steps[si] << ","
+          << residual->c[si] << "," << residual->w[si] << "\n";
+    }
+  }
+}
+
 template <class QueryFn>
 std::string evaluate(const Args& args, const Mesh& mesh, QueryFn&& query_fn) {
   warmup(args, query_fn);
@@ -670,6 +742,7 @@ std::string evaluate(const Args& args, const Mesh& mesh, QueryFn&& query_fn) {
     rs = summarize(residual.r, 0.0);
     rp = &residual; rwsp = &rws; rcsp = &rcs; rsp = &rs;
   }
+  write_sample_dump(args, cp, rp);
   return make_json(args, mesh, exact, pp, psp, cp, csp, rp, rwsp, rcsp, rsp);
 }
 

@@ -1,0 +1,62 @@
+{
+  "backend": "cuda",
+  "requested_mode": "wos",
+  "compiled": {
+    "N2WOS_ENABLE_FCPW_GPU": true,
+    "N2WOS_FCPW_SOURCE_DIR": "/home/syokota/workspace/n2wos/external/fcpw",
+    "N2WOS_CMAKE_BUILD_TYPE": "Release",
+    "__cplusplus": 201703
+  },
+  "runtime": {
+    "fcpw_dir": "/home/syokota/workspace/n2wos/external/fcpw",
+    "print_logs": false
+  },
+  "mesh": {
+    "type": "procedural_bumpy_sphere",
+    "vertices": 32514,
+    "triangles": 65024,
+    "lat_segments": 128,
+    "lon_segments": 256,
+    "radius": 1,
+    "bump_amplitude": 0.07999999821,
+    "bump_frequency": 7
+  },
+  "environment": {
+    "PATH": "/usr/local/cuda/bin:/usr/lib/wsl/lib:/home/syokota/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/bin/remote-cli:/home/syokota/miniforge3/bin:/home/syokota/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin:/mnt/c/Program Files/ImageMagick-7.1.1-Q16-HDRI:/mnt/c/Program Files (x86)/Embarcadero/Studio/22.0/bin:/mnt/c/Users/Public/Documents/Embarcadero/Studio/22.0/Bpl:/mnt/c/Program Files (x86)/Embarcadero/Studio/22.0/bin64:/mnt/c/Users/Public/Documents/Embarcadero/Studio/22.0/Bpl/Win64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0libnvvp:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32/OpenSSH:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit:/mnt/c/opencv/build/x64/vc15/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/vcpkg:/mnt/c/vcpkg/installed/x64-windows/bin:/mnt/c/Program Files/gs/gs10.05.1/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files/CMake/bin:/mnt/c/Users/sy415/workspace/ninja/build-cmake/Release:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2025.4.1:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/sy415/AppData/Local/Programs/Python/Python311/Scripts:/mnt/c/Users/sy415/AppData/Local/Programs/Python/Python311:/mnt/c/Users/sy415/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/sy415/.dotnet/tools:/mnt/c/Users/sy415/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/opencv/build/x64/vc15/bin:/mnt/c/Program Files (x86)/Brackets:/mnt/c/Users/sy415/AppData/Roaming/Programs/Zero Install:/mnt/c/Users/sy415/AppData/Local/Microsoft/WindowsApps:/mnt/c/texlive/2025/bin/windows:/mnt/c/Users/sy415/workspace/ninja/build-cmake/Release/ninja.exe:/mnt/c/Users/sy415/.dotnet/tools:/mnt/c/Users/sy415/AppData/Local/Microsoft/WinGet/Links:/snap/bin",
+    "LD_LIBRARY_PATH": "/usr/local/cuda/lib64:/usr/lib/wsl/lib:",
+    "CUDA_HOME": "/usr/local/cuda",
+    "CUDA_PATH": "/usr/local/cuda",
+    "CUDA_VISIBLE_DEVICES": "",
+    "NVIDIA_VISIBLE_DEVICES": "",
+    "VK_ICD_FILENAMES": "",
+    "VK_LAYER_PATH": ""
+  },
+  "results": [
+    {
+      "backend": "cuda",
+      "mode": "wos",
+      "n_queries": 0,
+      "usec/query": 0,
+      "usec_per_query": 0,
+      "mean_usec_per_query": 0,
+      "median_usec_per_query": 0,
+      "min_usec_per_query": 0,
+      "max_usec_per_query": 0,
+      "n_samples": 65536,
+      "usec/sample": 10.43213504,
+      "usec_per_sample": 10.43213504,
+      "usec_per_wos_query": 0.3699669374,
+      "avg_steps": 28.19747925,
+      "p95_steps": 57,
+      "p99_steps": 76,
+      "max_steps": 142,
+      "max_steps_limit": 512,
+      "active_remaining": 0,
+      "query_count": 1847950,
+      "repeats": 0,
+      "total_usec": 683680.402,
+      "checksum": 213.7205121,
+      "active_count_by_step": [65536, 65536, 65536, 65536, 65517, 65429, 65165, 64733, 64097, 63231, 62068, 60671, 59122, 57295, 55371, 53344, 51288, 49155, 46954, 44719, 42487, 40345, 38177, 36098, 34117, 32077, 30074, 28178, 26358, 24682, 23099, 21546, 20144, 18765, 17528, 16331, 15141, 14148, 13182, 12237, 11360, 10568, 9808, 9126, 8451, 7845, 7256, 6705, 6200, 5744, 5334, 4917, 4570, 4238, 3914, 3622, 3373, 3118, 2884, 2650, 2445, 2256, 2095, 1935, 1787, 1648, 1493, 1353, 1248, 1157, 1072, 979, 901, 839, 772, 708, 648, 596, 547, 514, 472, 441, 402, 378, 352, 332, 306, 283, 264, 249, 228, 218, 202, 181, 162, 155, 147, 136, 122, 111, 102, 92, 86, 81, 74, 68, 62, 53, 42, 39, 37, 34, 31, 30, 28, 26, 23, 20, 19, 18, 15, 15, 12, 10, 10, 10, 10, 9, 9, 8, 7, 7, 6, 4, 3, 3, 3, 3, 2, 2, 2, 1]
+    }
+  ]
+}

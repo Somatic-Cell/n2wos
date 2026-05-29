@@ -1,0 +1,62 @@
+{
+  "backend": "cuda",
+  "requested_mode": "cpq",
+  "compiled": {
+    "N2WOS_ENABLE_FCPW_GPU": true,
+    "N2WOS_FCPW_SOURCE_DIR": "/home/syokota/workspace/n2wos/external/fcpw",
+    "N2WOS_CMAKE_BUILD_TYPE": "Release",
+    "__cplusplus": 201703
+  },
+  "runtime": {
+    "fcpw_dir": "/home/syokota/workspace/n2wos/external/fcpw",
+    "print_logs": false
+  },
+  "mesh": {
+    "type": "procedural_bumpy_sphere",
+    "vertices": 32514,
+    "triangles": 65024,
+    "lat_segments": 128,
+    "lon_segments": 256,
+    "radius": 1,
+    "bump_amplitude": 0.07999999821,
+    "bump_frequency": 7
+  },
+  "environment": {
+    "PATH": "/usr/local/cuda/bin:/usr/lib/wsl/lib:/home/syokota/.vscode-server/bin/8761a5560cfd65fdd19ce7e2bd18dab5c0a4d84e/bin/remote-cli:/home/syokota/miniforge3/bin:/home/syokota/miniforge3/condabin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin/x64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin:/mnt/c/Program Files/ImageMagick-7.1.1-Q16-HDRI:/mnt/c/Program Files (x86)/Embarcadero/Studio/22.0/bin:/mnt/c/Users/Public/Documents/Embarcadero/Studio/22.0/Bpl:/mnt/c/Program Files (x86)/Embarcadero/Studio/22.0/bin64:/mnt/c/Users/Public/Documents/Embarcadero/Studio/22.0/Bpl/Win64:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0/bin:/mnt/c/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v13.0libnvvp:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0:/mnt/c/Windows/System32/OpenSSH:/mnt/c/Program Files (x86)/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files/Intel/Intel(R) Management Engine Components/DAL:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn:/mnt/c/Program Files/Git/cmd:/mnt/c/Program Files (x86)/Windows Kits/10/Windows Performance Toolkit:/mnt/c/opencv/build/x64/vc15/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0:/mnt/c/WINDOWS/System32/OpenSSH:/mnt/c/vcpkg:/mnt/c/vcpkg/installed/x64-windows/bin:/mnt/c/Program Files/gs/gs10.05.1/bin:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA App/NvDLISR:/mnt/c/Program Files/CMake/bin:/mnt/c/Users/sy415/workspace/ninja/build-cmake/Release:/mnt/c/Program Files/dotnet:/mnt/c/Program Files/NVIDIA Corporation/Nsight Compute 2025.4.1:/mnt/c/Program Files/PowerShell/7:/mnt/c/Users/sy415/AppData/Local/Programs/Python/Python311/Scripts:/mnt/c/Users/sy415/AppData/Local/Programs/Python/Python311:/mnt/c/Users/sy415/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/sy415/.dotnet/tools:/mnt/c/Users/sy415/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/opencv/build/x64/vc15/bin:/mnt/c/Program Files (x86)/Brackets:/mnt/c/Users/sy415/AppData/Roaming/Programs/Zero Install:/mnt/c/Users/sy415/AppData/Local/Microsoft/WindowsApps:/mnt/c/texlive/2025/bin/windows:/mnt/c/Users/sy415/workspace/ninja/build-cmake/Release/ninja.exe:/mnt/c/Users/sy415/.dotnet/tools:/mnt/c/Users/sy415/AppData/Local/Microsoft/WinGet/Links:/snap/bin",
+    "LD_LIBRARY_PATH": "/usr/local/cuda/lib64:/usr/lib/wsl/lib:",
+    "CUDA_HOME": "/usr/local/cuda",
+    "CUDA_PATH": "/usr/local/cuda",
+    "CUDA_VISIBLE_DEVICES": "",
+    "NVIDIA_VISIBLE_DEVICES": "",
+    "VK_ICD_FILENAMES": "",
+    "VK_LAYER_PATH": ""
+  },
+  "results": [
+    {
+      "backend": "cuda",
+      "mode": "cpq",
+      "n_queries": 128,
+      "usec/query": 11.37358594,
+      "usec_per_query": 11.37358594,
+      "mean_usec_per_query": 11.10491602,
+      "median_usec_per_query": 11.37358594,
+      "min_usec_per_query": 10.13476562,
+      "max_usec_per_query": 11.72735156,
+      "n_samples": 0,
+      "usec/sample": 0,
+      "usec_per_sample": 0,
+      "usec_per_wos_query": 0,
+      "avg_steps": 0,
+      "p95_steps": 0,
+      "p99_steps": 0,
+      "max_steps": 0,
+      "max_steps_limit": 0,
+      "active_remaining": 0,
+      "query_count": 2560,
+      "repeats": 20,
+      "total_usec": 28428.585,
+      "checksum": 512.5700379,
+      "active_count_by_step": []
+    }
+  ]
+}

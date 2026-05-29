@@ -1,0 +1,113 @@
+{
+  "program": "n2wos_eval_2lmc",
+  "backend": "cuda",
+  "cache": "exact",
+  "compiled": {"N2WOS_ENABLE_FCPW_GPU": true, "N2WOS_ENABLE_TCNN": false},
+  "args": {"m": 8, "max_steps": 512, "n_pure": 65536, "n_coarse": 65536, "n_residual": 65536, "warmup_queries": 65536, "eps": 9.999999747e-05, "safety": 0.9900000095, "seed": 20417, "x0": [0.1, 0.05, 0], "cache_scale": 1, "cache_bias": 0},
+  "target": {"name": "harmonic_x2_minus_y2", "exact_value_at_x0": 0.0075},
+  "mesh": {"type": "procedural_bumpy_sphere", "vertices": 32514, "triangles": 65024, "lat_segments": 128, "lon_segments": 256, "radius": 1, "bump_amplitude": 0.07999999821, "bump_frequency": 7},
+  "environment": {"CUDA_HOME": "/usr/local/cuda", "CUDA_PATH": "/usr/local/cuda", "LD_LIBRARY_PATH": "/usr/local/cuda/lib64:/usr/lib/wsl/lib:"},
+  "estimators": {
+    "pure_wos": {
+      "name": "pure_wos",
+      "m": -1,
+      "max_steps": 512,
+      "total_usec": 399350.04,
+      "usec_per_sample": 6.093598022,
+      "usec_per_query": 0.2161542996,
+      "query_count": 1847523,
+      "queries_per_sample": 28.19096375,
+      "avg_steps": 28.19096375,
+      "max_observed_steps": 168,
+      "boundary_count": 65536,
+      "truncated_count": 0,
+      "checksum": -3.484838343,
+      "stats": {
+        "n": 65536,
+        "mean": 0.00682634877,
+        "variance": 0.2628928493,
+        "std_error": 0.002002854596,
+        "bias": -0.0006736512298,
+        "mse_model": 4.465232513e-06
+      },
+      "active_count_by_step": [65536, 65536, 65536, 65536, 65513, 65435, 65208, 64777, 64165, 63314, 62218, 60881, 59335, 57506, 55535, 53531, 51396, 49237, 46959, 44731, 42451, 40180, 38040, 35968, 33878, 31893, 29941, 28132, 26301, 24683, 23070, 21584, 20122, 18727, 17517, 16307, 15232, 14188, 13191, 12238, 11351, 10525, 9720, 9004, 8346, 7728, 7119, 6605, 6085, 5654, 5239, 4857, 4481, 4133, 3839, 3540, 3301, 3051, 2808, 2582, 2406, 2211, 2027, 1885, 1751, 1623, 1506, 1395, 1285, 1183, 1104, 1027, 959, 883, 819, 757, 708, 657, 616, 574, 537, 494, 452, 418, 383, 347, 319, 290, 267, 238, 222, 203, 192, 178, 160, 144, 133, 125, 114, 107, 102, 98, 91, 80, 74, 70, 66, 61, 56, 53, 46, 44, 39, 38, 35, 33, 30, 29, 27, 26, 24, 22, 20, 15, 13, 13, 10, 9, "truncated_after_128_entries"]
+    },
+    "coarse": {
+      "name": "coarse_cache",
+      "m": 8,
+      "max_steps": 8,
+      "total_usec": 97604.75,
+      "usec_per_sample": 1.489330292,
+      "usec_per_query": 0.186559483,
+      "query_count": 523183,
+      "queries_per_sample": 7.983139038,
+      "avg_steps": 7.983139038,
+      "max_observed_steps": 8,
+      "boundary_count": 1342,
+      "truncated_count": 0,
+      "checksum": -5.049862125,
+      "stats": {
+        "n": 65536,
+        "mean": 0.008460357707,
+        "variance": 0.2149045304,
+        "std_error": 0.001810851429,
+        "bias": 0.0009603577069,
+        "mse_model": 4.201469823e-06
+      },
+      "active_count_by_step": [65536, 65536, 65536, 65536, 65522, 65432, 65232, 64853]
+    },
+    "coupled_residual": {
+      "name": "coupled_residual",
+      "m": 8,
+      "max_steps": 512,
+      "total_usec": 410513.215,
+      "usec_per_sample": 6.263934555,
+      "usec_per_query": 0.2223857594,
+      "query_count": 1845951,
+      "queries_per_sample": 28.16697693,
+      "avg_steps": 28.16697693,
+      "max_observed_steps": 168,
+      "boundary_count": 65536,
+      "truncated_count": 0,
+      "checksum": -1.36637627,
+      "w_stats": {
+        "n": 65536,
+        "mean": 0.008093230892,
+        "variance": 0.2632238135,
+        "std_error": 0.002004114928,
+        "bias": 0.0005932308921,
+        "mse_model": 4.368399537e-06
+      },
+      "c_stats": {
+        "n": 65536,
+        "mean": 0.007839696722,
+        "variance": 0.2148210433,
+        "std_error": 0.001810499651,
+        "bias": 0.0003396967216,
+        "mse_model": 3.393302848e-06
+      },
+      "residual_stats": {
+        "n": 65536,
+        "mean": 0.0002535341705,
+        "variance": 0.04930184598,
+        "std_error": 0.0008673444922,
+        "bias": 0.0002535341705,
+        "mse_model": 8.165660438e-07
+      },
+      "active_count_by_step": [65536, 65536, 65536, 65536, 65519, 65436, 65197, 64768, 64152, 63248, 62127, 60778, 59286, 57564, 55679, 53632, 51512, 49351, 47081, 44824, 42655, 40379, 38222, 36063, 33972, 31947, 30030, 28195, 26409, 24727, 23077, 21489, 20046, 18718, 17446, 16274, 15147, 14046, 13064, 12114, 11271, 10471, 9721, 9004, 8372, 7746, 7177, 6642, 6133, 5689, 5233, 4810, 4458, 4142, 3805, 3493, 3227, 2974, 2744, 2556, 2345, 2164, 2006, 1847, 1688, 1542, 1422, 1317, 1228, 1152, 1063, 990, 903, 819, 754, 690, 631, 577, 533, 489, 442, 403, 365, 339, 314, 294, 276, 254, 231, 216, 198, 186, 173, 158, 142, 129, 119, 110, 102, 97, 88, 81, 72, 68, 63, 58, 55, 50, 49, 45, 42, 41, 41, 37, 33, 28, 26, 26, 25, 23, 19, 19, 19, 18, 16, 15, 13, 11, "truncated_after_128_entries"]
+    }
+  },
+  "two_level": {
+    "mean": 0.008713891877,
+    "bias": 0.001213891877,
+    "variance_model_current_allocation": 4.031469366e-06,
+    "mse_model_current_allocation": 5.505002856e-06,
+    "total_usec_current_allocation": 508117.965,
+    "mse_time_current_allocation": 2.797190848,
+    "pure_var_cost_score": 1.601963347,
+    "coarse_var_cost_score": 0.3200638269,
+    "residual_var_cost_score": 0.3088235367,
+    "two_level_optimal_var_cost_score": 1.257674269,
+    "speedup_score_vs_pure": 1.273750594
+  }
+}

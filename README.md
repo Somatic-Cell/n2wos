@@ -23,13 +23,22 @@ git init
 git am /path/to/0001-bootstrap-native-fcpw-diagnostics.patch
 ```
 
-Fetch FCPW:
+Fetch FCPW and its nested dependencies:
 
 ```bash
 bash scripts/bootstrap_external.sh
 ```
 
-The script will use a git submodule when the directory is inside a git repository. Commit the resulting `.gitmodules` and submodule gitlink after it succeeds.
+The script will use a git submodule when the directory is inside a git repository. It also initializes FCPW's nested submodules, including `deps/eigen` and `deps/slang-rhi`. Commit the resulting `.gitmodules` and submodule gitlink after it succeeds.
+
+If the build fails with `fatal error: Eigen/Core: No such file or directory`, run:
+
+```bash
+bash scripts/bootstrap_external.sh
+rm -rf build-release-gpu
+```
+
+That error usually means FCPW itself was present, but its nested Eigen submodule was not initialized.
 
 ## WSL/CUDA preflight
 
@@ -107,11 +116,15 @@ WoS-style profile without neural cache:
   --mode wos \
   --n-samples 65536 \
   --max-steps 512 \
+  --wos-repeats 3 \
+  --wos-warmup-queries 65536 \
   --eps 1e-4 \
   --safety 0.99 \
   --print-logs \
   --json results/wos_cuda.json
 ```
+
+For CUDA timing, keep the WoS warmup enabled unless you explicitly want cold-start cost. Without a warmup, the first timed WoS query can include Slang/CUDA first-use overhead and can dominate small fixed-depth profiles.
 
 Run CPU/Vulkan/CUDA as a batch:
 
@@ -123,6 +136,33 @@ python3 scripts/run_probe_matrix.py \
   --n-queries 262144 \
   --repeats 5 \
   --print-logs
+```
+
+Batch-size sweep and fixed-depth WoS cost sweep:
+
+```bash
+python3 scripts/run_batch_sweep.py \
+  --build-dir build-release-gpu \
+  --backends cuda \
+  --repeats 20 \
+  --outdir results/batch_sweep_cuda
+
+python3 scripts/run_depth_sweep.py \
+  --build-dir build-release-gpu \
+  --backends cuda \
+  --depths "0,1,2,4,8,16,32,64,128,256,512" \
+  --runs 5 \
+  --wos-warmup-queries 65536 \
+  --n-samples 65536 \
+  --outdir results/depth_sweep_cuda_warm
+
+python3 scripts/summarize_results.py results/batch_sweep_cuda \
+  --aggregate --format csv \
+  -o results/batch_sweep_cuda_summary.csv
+
+python3 scripts/summarize_results.py results/depth_sweep_cuda_warm \
+  --aggregate --format csv \
+  -o results/depth_sweep_cuda_warm_summary.csv
 ```
 
 ## JSON fields
@@ -141,6 +181,9 @@ The output contains, among other fields:
 - `p99_steps`
 - `max_steps`
 - `query_count`
+- `run_index`
+- `wos_warmup_queries`
+- `wos_warmup_usec`
 - `active_count_by_step`
 - `active_remaining`
 - `environment`
